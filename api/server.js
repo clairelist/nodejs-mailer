@@ -1,13 +1,44 @@
 const express = require("express");
 const server = express();
+const nodemailer = require('nodemailer'); 
 
 server.use(express.json());
 
 //we will not have to use routers I don't think...
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.MAIL_SERVER_USER,
+      pass: process.env.MAIL_SERVER_PASSWORD
+    }
+  });
+
 server.get("/", (req, res) => { //used for testing!
     res.json({ api: "up" });
   });
+
+  server.post("/sendmail", (req, res, next)=>{
+    //create a new mailSender object, pull out requisite fields from request,
+    //then send that mailSender object to the to: field !
+
+    //let from, to, subject, body = req.body; //will this work? destructuring needed but vscode is complaining about an errory
+
+    let mailObject = {  
+    from: req.body.from,
+    to: req.body.to,
+    subject: req.body.subject,
+    text: req.body.text
+   }
+
+    transporter.sendMail(mailObject, (error, info)=>{
+        if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+    })
+  })
   
   server.use((err, req, res, next) => { 
     res.status(err.status || 500).json({
