@@ -6,7 +6,7 @@ server.use(express.json());
 
 //we will not have to use routers I don't think...
 
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({ //TODO: AUTHORIZATION IS MORE COMPLICATED OF FUCKING COURSE.
     service: 'gmail',
     auth: {
       user: process.env.MAIL_SERVER_USER,
