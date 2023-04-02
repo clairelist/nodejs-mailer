@@ -15,3 +15,5 @@ server.get("/", (req, res) => { //used for testing!
       stack: err.stack,
     });
   });
+
+  module.exports = server;
