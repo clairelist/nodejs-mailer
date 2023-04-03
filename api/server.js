@@ -6,11 +6,15 @@ server.use(express.json());
 
 //we will not have to use routers I don't think...
 
-const transporter = nodemailer.createTransport({ //TODO: AUTHORIZATION IS MORE COMPLICATED OF FUCKING COURSE.
+const transporter = nodemailer.createTransport({ //TODO: SET UP THIS APP IN GOOGLE CLOUD APPS THING I DONT FUCKING KNOW
     service: 'gmail',
     auth: {
+      type: "OAuth2",
       user: process.env.MAIL_SERVER_USER,
-      pass: process.env.MAIL_SERVER_PASSWORD
+      pass: process.env.MAIL_SERVER_PASSWORD,
+      clientId: process.env.OAUTH_CLIENTID,
+      clientSecret: process.env.OAUTH_CLIENT_SECRET,
+      refreshToken: process.env.OAUTH_REFRESH_TOKEN
     }
   });
 
