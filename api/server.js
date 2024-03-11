@@ -5,8 +5,6 @@ require('dotenv').config();
 
 server.use(express.json());
 
-//we will not have to use routers I don't think...
-
 //TODOS: ABSTRACT AWAY SOME OF THIS CONFIG STUFF!
 const transporter = nodemailer.createTransport({ 
     service: 'gmail',
@@ -23,16 +21,17 @@ server.get("/", (req, res) => { //used for testing!
     res.json({ api: "up" });
   });
 
-  server.post("/sendmail", (req, res, next)=>{
-    //create a new mailSender object, pull out requisite fields from request,
-    //then send that mailSender object to the to: field !
+  server.post("/sendmail", (req, res, next) => {
 
+    //TODOS: CLEAN THIS UP WITH OBJECT DESTRUCTURING
+    //TODOS: ADD HTML FIELD OPTION!
     let mailObject = {  
     from: req.body.from,
     to: req.body.to,
     subject: req.body.subject,
     text: req.body.text
    }
+
    async function send(){
     try {
       await transporter.sendMail(mailObject);
