@@ -1,20 +1,21 @@
 const express = require("express");
 const server = express();
 const nodemailer = require('nodemailer'); 
+require('dotenv').config();
 
 server.use(express.json());
 
 //we will not have to use routers I don't think...
 
-const transporter = nodemailer.createTransport({ //TODO: SET UP THIS APP IN GOOGLE CLOUD APPS THING I DONT FUCKING KNOW
+//TODOS: ABSTRACT AWAY SOME OF THIS CONFIG STUFF!
+const transporter = nodemailer.createTransport({ 
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
-      type: "OAuth2",
       user: process.env.MAIL_SERVER_USER,
       pass: process.env.MAIL_SERVER_PASSWORD,
-      clientId: process.env.OAUTH_CLIENTID,
-      clientSecret: process.env.OAUTH_CLIENT_SECRET,
-      refreshToken: process.env.OAUTH_REFRESH_TOKEN
     }
   });
 
@@ -26,22 +27,23 @@ server.get("/", (req, res) => { //used for testing!
     //create a new mailSender object, pull out requisite fields from request,
     //then send that mailSender object to the to: field !
 
-    //let from, to, subject, body = req.body; //will this work? destructuring needed but vscode is complaining about an errory
-
     let mailObject = {  
     from: req.body.from,
     to: req.body.to,
     subject: req.body.subject,
     text: req.body.text
    }
+   async function send(){
+    try {
+      await transporter.sendMail(mailObject);
+      res.json({message: "Success!", status: 200}); //lookup proper status code for this!
+    } catch (err) {
+     console.log(err);
+    }
+   }
 
-    transporter.sendMail(mailObject, (error, info)=>{
-        if (error) {
-            console.log(error);
-          } else {
-            console.log('Email sent: ' + info.response);
-          }
-    })
+   send();
+   
   })
   
   server.use((err, req, res, next) => { 
