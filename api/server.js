@@ -32,6 +32,8 @@ server.get("/", (req, res) => { //used for testing!
     text: req.body.text
    }
 
+
+
    async function send(){
     try {
       await transporter.sendMail(mailObject);
@@ -44,6 +46,19 @@ server.get("/", (req, res) => { //used for testing!
    send();
    
   })
+
+  server.post("/sendattachment", (req, res)=>{
+    let mailObject;
+
+    mailObject = {...req.body};
+
+    //todo: determine which attachment method is best ! Then 
+    //copy the send() function from above but use the attachemnt! Fun!
+
+    res.json({mail: mailObject});
+
+
+   })
   
   server.use((err, req, res, next) => { 
     res.status(err.status || 500).json({
